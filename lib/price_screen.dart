@@ -8,7 +8,8 @@ import 'coin_data.dart';
 import 'coin_data.dart';
 
 const apiKey = '53588F34-FC6A-4DD7-9736-0F46466356D4';
-const url = 'https://rest.coinapi.io/v1/exchangerate/BTC/USD?apikey=$apiKey';
+const coinApi = 'https://rest.coinapi.io/v1/exchangerate/BTC';
+const url = '$coinApi/USD?apikey=$apiKey';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -16,14 +17,6 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  double rate;
-  void getCoinData() async {
-    CoinData coinData = CoinData(url);
-
-    var getCoinData = await coinData.getData();
-    rate = getCoinData['rate'];
-  }
-
   String selectedCurrency = 'USD';
   DropdownButton<String> androidDropdown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
@@ -63,9 +56,30 @@ class _PriceScreenState extends State<PriceScreen> {
     );
   }
 
+  String rate = '?';
+  void getCoinData() async {
+    try {
+      CoinData coinData = CoinData(url);
+
+      var getCoinData = await coinData.getData();
+      setState(
+        () {
+          rate = getCoinData['rate'].toStringAsFixed(2);
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCoinData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    getCoinData();
     return Scaffold(
       appBar: AppBar(
         title: Text('🤑 Coin Ticker'),
@@ -85,7 +99,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ${rate.toStringAsFixed(2)} USD',
+                  '1 BTC = $rate USD',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
