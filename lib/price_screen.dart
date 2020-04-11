@@ -5,6 +5,7 @@ import 'dart:io' show Platform;
 
 import 'coin_data.dart';
 import 'coin_data.dart';
+import 'coin_data.dart';
 
 const apiKey = '53588F34-FC6A-4DD7-9736-0F46466356D4';
 const url = 'https://rest.coinapi.io/v1/exchangerate/BTC/USD?apikey=$apiKey';
@@ -17,10 +18,10 @@ class PriceScreen extends StatefulWidget {
 class _PriceScreenState extends State<PriceScreen> {
   double rate;
   void getCoinData() async {
-    NetworkHelper networkHelper = NetworkHelper(url);
+    CoinData coinData = CoinData(url);
 
-    var coinData = await networkHelper.getData();
-    rate = coinData['rate'];
+    var getCoinData = await coinData.getData();
+    rate = getCoinData['rate'];
   }
 
   String selectedCurrency = 'USD';
@@ -60,11 +61,6 @@ class _PriceScreenState extends State<PriceScreen> {
       },
       children: pickerItems,
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override

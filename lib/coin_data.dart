@@ -31,10 +31,8 @@ const List<String> cryptoList = [
   'LTC',
 ];
 
-class CoinData {}
-
-class NetworkHelper {
-  NetworkHelper(this.url);
+class CoinData {
+  CoinData(this.url);
   final String url;
 
   Future getData() async {
