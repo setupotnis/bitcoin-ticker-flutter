@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'coin_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
-import 'package:http/http.dart' as http;
 
-const url =
-    'https://rest.coinapi.io/v1/exchangerate/BTC/USD?apikey=53588F34-FC6A-4DD7-9736-0F46466356D4';
+import 'coin_data.dart';
+import 'coin_data.dart';
+
+const apiKey = '53588F34-FC6A-4DD7-9736-0F46466356D4';
+const url = 'https://rest.coinapi.io/v1/exchangerate/BTC/USD?apikey=$apiKey';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -13,9 +15,12 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  void getData() async {
-    http.Response response = await http.get(url);
-    print(response.body);
+  double rate;
+  void getCoinData() async {
+    NetworkHelper networkHelper = NetworkHelper(url);
+
+    var coinData = await networkHelper.getData();
+    rate = coinData['rate'];
   }
 
   String selectedCurrency = 'USD';
@@ -58,8 +63,13 @@ class _PriceScreenState extends State<PriceScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    getData();
+    getCoinData();
     return Scaffold(
       appBar: AppBar(
         title: Text('🤑 Coin Ticker'),
@@ -79,7 +89,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 BTC = ${rate.toStringAsFixed(2)} USD',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
